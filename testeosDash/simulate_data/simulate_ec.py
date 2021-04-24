@@ -20,6 +20,7 @@ start_time = data["timestamp"][0]
 start_time += '.00'
 print(start_time)
 
+secs_per_day = 24*60*60
 ec = []
 
 for i in range(len(data)):
@@ -38,10 +39,13 @@ for i in range(len(data)):
             - datetime.datetime.strptime(start_time, datetimeFormat) 
 
     secs = diff.seconds
-    secs += diff.days * 24 * 60 * 60
+    secs += diff.days * secs_per_day
 
     #uso de la diferencia de tiempo en segundos para simular el ec en ese momento
     #las otras componentes se usan para generar ruido en la señal simulada de electroconductividad
+
+    #se divide entre las cantidades de segundos por día en 3 días para que la onda tenga un periodo
+    #de 3 días
     othr_component1 = math.cos( (secs * 2 * math.pi)/(secs_per_day*3) ) + noise 
     othr_component2 = abs(math.cos( secs * 2 * math.pi ) + noise )
     main_component = math.sin( (secs * 2 * math.pi)/(secs_per_day*3) ) + noise
