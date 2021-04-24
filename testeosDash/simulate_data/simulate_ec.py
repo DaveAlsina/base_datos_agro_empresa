@@ -14,17 +14,13 @@ data = pd.read_csv("./sensor_data.csv")
 #get start time
 start_time = data["timestamp"][0]
 
-
-#agrega el .0 para poder hacer uso de metodos de una librería 
+#agrega el .00 para poder hacer uso de metodos de una librería 
 #para calcular la diferencia en tiempo
-#start_time = start_time[:-1] + '.00'
 
 start_time += '.00'
 print(start_time)
 
-secs_per_day = 24 * 60 * 60
 ec = []
-
 
 for i in range(len(data)):
     
@@ -61,9 +57,12 @@ for i in range(len(data)):
     ec.append(main_component)
 
 
+#visualización de la forma de los datos generados
 plt.scatter(list(range(0, len(ec))), ec)
 plt.show()
 
+#añadido de la columna 'ec' al dataframe y 
+#guardado del csv
 data["ec"] = ec
 data.to_csv("sensor_data_ec_added.csv", index=False)
 
