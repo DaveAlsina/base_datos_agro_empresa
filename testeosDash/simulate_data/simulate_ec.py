@@ -9,7 +9,7 @@ from random import normalvariate, seed
 import pandas as pd
 
 seed(323131253495) 
-data = pd.read_csv("./sensor_data.csv")
+data = pd.read_csv("./csv_files/sensor_data_merged.csv")
 
 #get start time
 start_time = data["timestamp"][0]
@@ -68,8 +68,7 @@ plt.show()
 #añadido de la columna 'ec' al dataframe y 
 #guardado del csv
 data["ec"] = ec
-data.to_csv("sensor_data_ec_added.csv", index=False)
-
+data.to_csv("./csv_files/sensor_data_merged_ec_added.csv", index=False)
 
 
 #indexing and selecting data from pandas dataframe:
