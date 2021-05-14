@@ -1,0 +1,3 @@
+id_crop_name,crop_name,min_humidity,max_humidity,min_temperature_day,max_temperature_day,min_temperature_night,max_temperature_night,min_ec,max_ec
+10011,lechuga,40,70,18,28,15,18,1.5,2.5
+10012,cilantro,40,70,10,30,10,30,1.6,1.8
