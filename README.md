@@ -6,7 +6,7 @@
 ### documentation:
 - Se encuentra documentación académica en donde se basa la simulación de los datos.
 
-### simulate_Data
+### simulate_data
 - Se encuentran los algortimos que utilizó para la simulación.
 
 ### upload_data
