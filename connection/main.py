@@ -17,7 +17,7 @@ print("MEASUREMENT TABLE")
 query = pd.read_sql_query(sql.getMeasurements(), conn.connection)
 conn.closeConnection()
 print(query)
-print("/n")
+print("\n")
 
 conn.openConnection()
 
@@ -25,7 +25,7 @@ print("CROP TABLE")
 query = pd.read_sql_query(sql.getCrop(), conn.connection)
 conn.closeConnection()
 print(query)
-print("/n")
+print("\n")
 
 conn.openConnection()
 
@@ -33,7 +33,7 @@ print("EXP CATEGORY TABLE")
 query = pd.read_sql_query(sql.getExpCategory(), conn.connection)
 conn.closeConnection()
 print(query)
-print("/n")
+print("\n")
 
 conn.openConnection()
 
@@ -41,7 +41,7 @@ print("EXPENSES TABLE")
 query = pd.read_sql_query(sql.getExpenses(), conn.connection)
 conn.closeConnection()
 print(query)
-print("/n")
+print("\n")
 
 conn.openConnection()
 
@@ -49,7 +49,7 @@ print("OPT CONDITIONS TABLE")
 query = pd.read_sql_query(sql.getOptCondition(), conn.connection)
 conn.closeConnection()
 print(query)
-print("/n")
+print("\n")
 
 conn.openConnection()
 
@@ -57,7 +57,7 @@ print("SALES TABLE")
 query = pd.read_sql_query(sql.getSales(), conn.connection)
 conn.closeConnection()
 print(query)
-print("/n")
+print("\n")
 
 conn.openConnection()
 
@@ -65,7 +65,7 @@ print("SENS INFO TABLE")
 query = pd.read_sql_query(sql.getSensInfo(), conn.connection)
 conn.closeConnection()
 print(query)
-print("/n")
+print("\n")
 
 conn.openConnection()
 
@@ -73,7 +73,7 @@ print("UNIT TABLE")
 query = pd.read_sql_query(sql.getUnit(), conn.connection)
 conn.closeConnection()
 print(query)
-print("/n")
+print("\n")
 
 conn.openConnection()
 
@@ -81,7 +81,7 @@ print("ZONE TABLE")
 query = pd.read_sql_query(sql.getZone(), conn.connection)
 conn.closeConnection()
 print(query)
-print("/n")
+print("\n")
 
 conn.openConnection()
 
@@ -89,7 +89,7 @@ print("PRODUCTION TABLE")
 query = pd.read_sql_query(sql.getProduction(), conn.connection)
 conn.closeConnection()
 print(query)
-print("/n")
+print("\n")
 
 
 

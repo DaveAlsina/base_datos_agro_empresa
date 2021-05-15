@@ -13,7 +13,7 @@ class Connection:
             with open(self.path, "r") as handler:
                 cred = json.load(handler)
 
-            print(cred)
+            #print(cred)
 
             self.connection = psycopg2.connect(user = cred["user"],
                                                password = cred["password"] ,

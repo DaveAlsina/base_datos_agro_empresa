@@ -45,7 +45,7 @@ def getExpCategory():
 def getExpenses():
   return """select * from expenses;"""
 
-def geOptCondition():
+def getOptCondition():
   return """select * from optimum_condition;"""
 
 def getSales():
