@@ -5,7 +5,6 @@
 
 ### dashborad: 
 - dash-analysis.py: se encuentra los análsis y el dash del negocio.
-- conexion.py: conexion de sql a python.
 
 ### documentation:
 - Se encuentra documentación académica en donde se basa la simulación de los datos.
