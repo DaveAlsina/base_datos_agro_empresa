@@ -1,0 +1,7 @@
+{
+	"user": "postgres",
+	"password": "contraseña_editar",
+	"database": "proyecto_cultivos",
+	"host": "localhost",
+	"port": "5432"
+}
