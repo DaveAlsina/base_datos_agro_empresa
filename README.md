@@ -14,4 +14,4 @@
 - Se encuentran los algortimos que utilizó para la simulación.
 
 ### upload_data:
-- Se encuentra los archivos que permite crear las tablas y cargar los datos en SQL.
+- Se encuentra los archivos create_table_project.sql y load_measurements_project.sql que permite crear las tablas y cargar los datos en SQL.
