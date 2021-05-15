@@ -1,4 +1,4 @@
-# Conexión con postgres a través de python
+# Conexión con postgreSQL a través de python
 ----
 
 Para poder ejecutar el script de conexión correctamente recuerde actualizar los datos de conexión
