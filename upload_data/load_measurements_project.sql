@@ -13,7 +13,7 @@ from '../data/sensor_info.csv'
 delimiter ','
 csv header;
 
-SET datestyle = mdy
+SET datestyle = mdy - formato del date 
 
 copy optimum_condition(id_crop_name, crop_name, min_humidity, max_humidity, min_temperature_day,
                       max_temperature_day, min_temperature_night, max_temperature_night, min_ec,
@@ -47,8 +47,13 @@ from '../data/expenses.csv'
 delimiter ','
 csv header;
 
+SET datestyle = dmy - formato del time de measurement
+
 copy measurement(sensor_id_sensor_info, time, temperature, humidity, pressure, lux,
                 electroconductivity)
 from '../data/measurement.csv'
 delimiter ',' encoding 'ISO-8859-1'
 csv header;
+
+
+
