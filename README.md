@@ -13,7 +13,10 @@ sobre el estado de la empresa y los cultivos.
 - Se encuentran los datos de cada tabla del modelo relacional.
 
 ### dashborad: 
-- *dash-analysis.py:* se encuentra los análsis y el dash del negocio.
+- *dash-prueba.py:* se encuentra un dash de prueba
+- scripts de sql para luego usarlos en el dash
+#### connection: 
+- Tiene los scripts para hacer la conexión a la base de datos con postgres a través de python.
 
 ### documentation:
 - Contiene documentación académica en donde se basa la simulación de los datos.
