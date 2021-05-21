@@ -37,28 +37,33 @@ def getMeasurements():
     #     return sql
 
 def getCrop():
-  return """select * from crop;"""
+    return """select * from crop;"""
 
 def getExpCategory():
-  return """select * from expense_category;"""
+    return """select * from expense_category;"""
 
 def getExpenses():
-  return """select * from expenses;"""
+    return """select * from expenses;"""
 
 def getOptCondition():
-  return """select * from optimum_condition;"""
+    return """select * from optimum_condition;"""
 
 def getSales():
-  return """select * from sales;"""
+    return """select * from sales;"""
 
 def getSensInfo():
-  return """select * from sensor_info;"""
+    return """select * from sensor_info;"""
 
 def getUnit():
-  return """select * from unit_measurement_eqv;"""
+    return """select * from unit_measurement_eqv;"""
 
 def getZone():
-  return """select * from zone;"""
-
+    return """select * from zone;"""
+  
 def getProduction():
-  return """select * from production;"""
+    return """select * from production;"""
+
+def getTotalIncomeByCrop():
+    return """select opc.crop_name, cast(sum(sls.total_income) as float) as total_income
+            from sales sls join crop cr on(sls.id_crop = cr.id) join optimum_condition opc on(cr.id_crop_name_optimum_condition = opc.id_crop_name)
+            group by opc.crop_name"""
