@@ -1,7 +1,19 @@
-def getMeasurements():
+def createMeasurement_selection_menu():
 
     """
-    Input:  date_range = ['fecha inicial', 'fecha final']
+    Función encargada de devolver cuales son los cultivos que 
+    tienen datos asociados para mostrarse en el display de measuments
+    esta función se encarga de invocar una función que fue definida
+    internamente en sql por conveniencia
+    """
+
+    return """select * from get_crops_with_measurements(get_min_date_measurement(), get_max_date_measurement())"""
+
+def getMeasurements(crop_name = "", start_date = "", date_range =[]):
+
+    """
+    Input:  start_date = "fecha de inicio del cultivo"
+            date_range = ['fecha inicial', 'fecha final']
             crop_name = 'nombre del cultivo'
     
     la fecha debe estar en formato yy-mm-dd 
