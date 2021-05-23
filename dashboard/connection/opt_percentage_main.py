@@ -177,6 +177,8 @@ app.layout = html.Div([
 
 
 
+#callback para cambiar las opciones de que fechas escoger en función del nombre 
+#de cultivo que ha seleccionado el usuario
 @app.callback(
     dash.dependencies.Output(component_id = 'opts_fechas_crop', component_property='options'),
     [dash.dependencies.Input(component_id = 'opciones_crop_meas_disp', component_property='value')]
@@ -184,7 +186,7 @@ app.layout = html.Div([
 
 def display_date_opts(crop_name):
     
-    if crop_name != None:
+    if crop_name != None:   #en caso de que se haya seleccionado un nombre de cultivo
 
         opt_data = []
 
@@ -206,16 +208,17 @@ def display_date_opts(crop_name):
         #en caso de que se rompa la funcionalidad aunque es muy poco posible
         return [{'label' : 'No hay opciones disponibles', 'value' : 0}]
 
+
+#callback para blockear la selección de qué fechas buscar
+#si no se especifica de cuál es el cultivo seleccionado
 @app.callback(
     dash.dependencies.Output(component_id = 'opts_fechas_crop', component_property='disabled'),
     [dash.dependencies.Input(component_id = 'opciones_crop_meas_disp', component_property='value')]
 )
 
-#callback para blockear la selección de qué fechas buscar
-#si no se especifica de cuál es el cultivo seleccionado
 def crop_date_gui_restriction(value):
 
-    print(value)
+    print("check para bloquear selección de fechas de cultivos, se recibió: ", value)
 
     if value == None:
         return True
@@ -224,7 +227,7 @@ def crop_date_gui_restriction(value):
 
 
 #callback para blockear la selección de qué condicion ambiental buscar
-#si no se especifica de qué cultivo se va a buscar
+#si no se especifica de qué cultivo se va a buscar y en qué fecha
 @app.callback(
     dash.dependencies.Output(component_id = 'opciones_measure', component_property='disabled'),
     [dash.dependencies.Input(component_id = 'opciones_crop_meas_disp', component_property='value'),
@@ -233,7 +236,7 @@ def crop_date_gui_restriction(value):
 
 def crop_name_gui_restriction(crop_name, date):
 
-    print(crop_name, date)
+    print("check para bloquear el menú de selección de variables ambientales, se recibió: ", crop_name, date)
 
     if ((crop_name  == None) or (date == None)):
         return True
@@ -241,8 +244,8 @@ def crop_name_gui_restriction(crop_name, date):
     return False 
 
 
-#callback para generar la figura que contiene todos las variables ambientales ploteadas 
-#que pidió el usuario
+#callback para ocultar la figura en donde se representan
+#todas las variables ambientales ploteadas que pidió el usuario
 @app.callback(
     dash.dependencies.Output(component_id = 'grafico_form_variables_amb', component_property='hidden'),
     [dash.dependencies.Input(component_id = 'opciones_measure', component_property='value'),
@@ -252,7 +255,8 @@ def crop_name_gui_restriction(crop_name, date):
 
 def show_hide_measure_grap(op_elegidas, crop_name, date):
     
-    print("aaaa esto es para el hidden: ",op_elegidas, crop_name, date)
+    print("check para ocultar gráfica, se recibió: ",op_elegidas, crop_name, date)
+    print()
 
     if ( (op_elegidas == []) or (crop_name == None) or (date == None) ):
         return True
@@ -277,8 +281,10 @@ def build_graph_measurements(op_elegidas, crop_name, date):
     print("Tipo de cultivo recibido: ", crop_name)
     
     fig = go.Figure()
-    row_counter = len(op_elegidas)
+    row_counter = len(op_elegidas)      #cantidad de variables a plotear
 
+    #estos ifs son para ajustar de una mejor forma el tamaño en altura
+    #de la gráfica en función de qué tantas variables debe contener la gráfica
     if row_counter > 3:
         max_height = 650
 
@@ -290,18 +296,21 @@ def build_graph_measurements(op_elegidas, crop_name, date):
     
     if ( (op_elegidas == []) or (crop_name == None) or (date == None) ):
 
-        print("aaaaa")
+        print("Aún no se puede crear una gráfica de variables ambientales de cultivos, faltan argumentos")
 
     else:
 
-
+        #calculo de la altura individual de cada subplot para cada variable
         individual_height = int(max_height/row_counter)
 
+        #query para realizar el plot
         conn.openConnection()
         measure = pd.read_sql_query(sql.getMeasurements(crop_name, date), conn.connection)
         conn.closeConnection()
 
-        print(measure)
+#        print(measure)
+
+        #diccionario con las opciones de estilo en función del nombre de variable ambiental que metió el usuario
         opts = {'humidity': ('Humedad', '#4b69ed'), 
                 'temperature' :('Temperatura', '#ff4340'),
                 'pressure': ('Presión Atm.' ,'#6CD1DB'),
@@ -313,14 +322,20 @@ def build_graph_measurements(op_elegidas, crop_name, date):
         if (row_counter == 1):
             
             local_fig = go.Scatter(x = list(measure["time_"]), y = list(measure[op_elegidas[0]]), 
-                        mode = 'lines', name=opts[op_elegidas[0]][0], 
-                        marker = dict(color=opts[op_elegidas[0]][1]))
+                        mode = 'lines', name = opts[op_elegidas[0]][0], 
+                        marker = dict(color = opts[op_elegidas[0]][1]))
             fig.add_trace(local_fig)
-            fig.update_layout(title=opts[op_elegidas[0]][0])
+
+            fig.update_layout(title = opts[ op_elegidas[0] ][0])
 
         elif (row_counter > 1):
 
-            fig = make_subplots(rows = row_counter, cols = 1, shared_xaxes = False, vertical_spacing = 0.1, row_heights = [ individual_height for i in op_elegidas])
+            #hace tantas filas de subplots como variables se le hayan pedido graficar, 
+            #y les setea el tamaño en altura que cada plot debe tener
+            fig = make_subplots(rows = row_counter, cols = 1, shared_xaxes = False, vertical_spacing = 0.1,
+                                row_heights = [ individual_height for i in op_elegidas])
+            
+            #contador para el número de fila del subplot
             count = 1
 
             for opt in op_elegidas:
