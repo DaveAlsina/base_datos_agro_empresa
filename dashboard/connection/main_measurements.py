@@ -63,7 +63,6 @@ app.layout = html.Div([
                                     dcc.Dropdown(
                                         id = "opciones_crop_meas_disp",
                                         options = options_crop_measurement_display ,
-                                            value = 'cilantro',
                                             placeholder = "Seleccione un cultivo",
                                             multi = False,
                                             className = "dropdown bg-dark"
@@ -103,12 +102,13 @@ app.layout = html.Div([
                 dcc.Dropdown(
                     id = 'opciones_measure',
                     options = [
-                            {'label': 'Temperatura', 'value': 'humidity'},
-                            {'label': 'Humedad', 'value': 'temperature'},
+                            {'label': 'Temperatura', 'value': 'temperature'},
+                            {'label': 'Humedad', 'value': 'humidity'},
                             {'label': 'Presión Atmosférica', 'value': 'pressure'},
-                            {'label': 'Luz', 'value': 'lux'}
+                            {'label': 'Luz', 'value': 'lux'},
+                            {'label': 'Electroconductividad', 'value': 'electroconductivity'}
                         ],
-                        value = ['humidity', 'temperature', 'pressure', 'lux'],
+                        value = ['humidity', 'temperature', 'pressure', 'lux', 'electroconductivity'],
                         placeholder = "Seleccione una variable",
                         multi = True,
                 ),
@@ -190,18 +190,20 @@ def crop_name_gui_restriction(value):
 #que pidió el usuario
 @app.callback(
     dash.dependencies.Output(component_id = 'grafico_form_variables_amb', component_property='hidden'),
-    [dash.dependencies.Input(component_id = 'opciones_crop_meas_disp', component_property='value'),
+    [dash.dependencies.Input(component_id = 'opciones_measure', component_property='value'),
+    dash.dependencies.Input(component_id = 'opciones_crop_meas_disp', component_property='value'),
     dash.dependencies.Input(component_id = 'opts_fechas_crop', component_property='value')]
 )
 
-def show_hide_measure_grap(crop_name, date):
+def show_hide_measure_grap(op_elegidas, crop_name, date):
     
     print("aaaa esto es para el hidden: ", crop_name, date)
 
-    if ((crop_name != None) and (date != None)):
-        return False 
-    else:
+    if ( (op_elegidas == []) or (crop_name == None) or (date == None) ):
         return True
+
+    else:
+        return False
  
 
 #callback para generar la figura que contiene todos las variables ambientales ploteadas 
@@ -220,15 +222,24 @@ def build_graph_measurements(op_elegidas, crop_name, date):
     print("Tipo de cultivo recibido: ", crop_name)
     
     fig = go.Figure()
-    max_height = 600
+    row_counter = len(op_elegidas)
+
+    if row_counter > 3:
+        max_height = 650
+
+    elif row_counter != 1:
+        max_height = 525
+
+    else:
+        max_height = 275
     
-    if (crop_name == None) or (date == None):
+    if ( (op_elegidas == []) or (crop_name == None) or (date == None) ):
 
         print("aaaaa")
 
     else:
 
-        row_counter = len(op_elegidas)
+
         individual_height = int(max_height/row_counter)
 
         conn.openConnection()
@@ -239,7 +250,9 @@ def build_graph_measurements(op_elegidas, crop_name, date):
         opts = {'humidity': ('Humedad', '#4b69ed'), 
                 'temperature' :('Temperatura', '#ff4340'),
                 'pressure': ('Presión Atm.' ,'#6CD1DB'),
-                'lux': ('Lux','#eed04d')}
+                'lux': ('Lux','#eed04d'),
+                'electroconductivity': ('Electroconductividad', '#54AB2F')
+                }
 
 
         if (row_counter == 1):
@@ -252,7 +265,7 @@ def build_graph_measurements(op_elegidas, crop_name, date):
 
         elif (row_counter > 1):
 
-            fig = make_subplots(rows = row_counter, cols = 1, shared_xaxes = False, vertical_spacing = 0.15, row_heights = [ individual_height for i in op_elegidas])
+            fig = make_subplots(rows = row_counter, cols = 1, shared_xaxes = False, vertical_spacing = 0.1, row_heights = [ individual_height for i in op_elegidas])
             count = 1
 
             for opt in op_elegidas:
