@@ -40,3 +40,38 @@ create or replace function get_max_date_measurement()
 	language sql;
 	
 select * from get_crops_with_measurements(get_min_date_measurement(), get_max_date_measurement())
+
+create or replace function get_crop_measurements(crop_name_ varchar(45), date_ date)
+	returns table(time timestamp, temperature numeric(4,2), humidity numeric(4,2), pressure numeric(6,2), lux numeric(7,2), ec(4,3))
+	as
+	'
+	
+		select sensor_id_sensor_info, time, temperature, humidity, pressure, lux, electroconductivity as ec
+		from measurement as mea
+		where mea.time::date >= '2021-04-01'
+		
+		select sens_inf.sensor_id as sens_id
+		from sensor_info as sens_inf 
+		inner join 
+			(select crp.id_zone 
+			from crop as crp
+			inner join 
+				(select id_crop_name as id_crp_nm 
+				from optimum_condition as opt_cond
+				where opt_cond.crop_name = 'lechuga') as id_crp_name
+			on crp.id_crop_name_optimum_condition =  id_crp_name.id_crp_nm 
+			where crp.start_date::date = '2021-04-28') as zone_crp
+		on sens_inf.id_zone = zone_crp.id_zone
+			
+		
+		
+	'
+	language sql;
+	
+	select * from measurement
+	select * from crop;
+
+
+select * from optimum_condition;
+
+
