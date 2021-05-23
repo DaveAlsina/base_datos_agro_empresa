@@ -22,31 +22,8 @@ def getMeasurements(crop_name = "", start_date = "", date_range =[]):
             da un filtrado por fecha
     """
 
-    # if (crop_name == "") and (date_range == []):
-    return """select * from measurement;"""
+    return """select * from get_crop_measurements('{}', '{}');""".format(crop_name, start_date)
 
-    # if (crop_name != "") and (date_range == []):
-
-    #     sql =  """select * from measurement 
-    #               where sensor_id_sensor_info in (  select sensor_id from sensor_info
-    #                                                 where id_zone in( select cr.id_zone from crop as cr
-    #                                                                   where cr.name in ('{}')
-    #                                                                 )
-    #                                              );""".format(crop_name)
-    #     return sql
-
-    # if (crop_name != "") and (date_range != []):
-
-
-    #     sql = """select * from measurement as m
-    #              where sensor_id_sensor_info in ( select sensor_id from sensor_info
-    #                                               where id_zone in( select cr.id_zone from crop as cr
-    #                                                                  where cr.name in ('{}')
-    #                                                                )
-    #              ) and m.time between to_timestamp('{}', 'YYYY-MM-DD HH:MI:SS')
-    #                and to_timestamp('{}', 'YYYY-MM-DD HH:MI:SS');""".format(crop_name, date_range[0], date_range[1]);
-
-    #     return sql
 
 def getCrop():
     return """select * from crop;"""
