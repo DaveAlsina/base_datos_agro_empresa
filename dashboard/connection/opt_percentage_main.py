@@ -9,7 +9,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
-conn = Connection("C:/Users/gabil/OneDrive/Escritorio/III SEMESTRE/Bases de datos/Proyecto/base_datos_agro_empresa-master/opt_percentage/conn_data.json") #datos para la conexión
+conn = Connection("./conn_data.json") #datos para la conexión
 
 #estilo de bootstrap
 external_stylesheets = ["https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"]
@@ -40,6 +40,7 @@ for cropname in measurementSelectionMenu['crop_name']:
 # QUERIES
 conn.openConnection()
 querycon = pd.read_sql_query(sql.getMeasurements(), conn.connection)
+
 queryhumlech = pd.read_sql_query(sql.getPercHum("lechuga"), conn.connection)
 queryhumcil = pd.read_sql_query(sql.getPercHum("cilantro"), conn.connection)
 queryeclech = pd.read_sql_query(sql.getPercEc("lechuga"), conn.connection)
@@ -150,17 +151,20 @@ app.layout = html.Div([
                 html.Div(className = "container-fluid", children =[
                 
                 html.Div(className="row mt-4", children=[
-                        html.Div(className="col-12 col-xl-6", children=[ ##grid division bootstrap
-                                html.Div(className="card border", children=[
-                                        html.Div(className="card-header bg-success text-light", children=[
-                                                html.H3(children=""),
-                        
-                        ]),
-                        html.Div(className = "card-body", children = [
-                                dcc.Graph(
-                                        id = 'barIncome1',
-                                        figure = figBar
-                                        ),
+                    html.Div(className = "card text-center", children =[
+
+                            html.Div(className="col-12 col-xl-6", children=[ ##grid division bootstrap
+                                    html.Div(className="card border", children=[
+                                            html.Div(className="card-header bg-success text-light", children=[
+                                                    html.H3(children=""),
+                            
+                                    ]),
+                            html.Div(className = "card-body", children = [
+                                    dcc.Graph(
+                                            id = 'barIncome1',
+                                            figure = figBar
+                                            ),
+                                    ]),
                                 ]),
                             ]),
                         ]),
@@ -207,8 +211,8 @@ def display_date_opts(crop_name):
     [dash.dependencies.Input(component_id = 'opciones_crop_meas_disp', component_property='value')]
 )
 
-#callback para blockear la selección de qué condicion ambiental buscar
-#si no se especifica de cuál es la fecha del cultivo se va a buscar
+#callback para blockear la selección de qué fechas buscar
+#si no se especifica de cuál es el cultivo seleccionado
 def crop_date_gui_restriction(value):
 
     print(value)
@@ -223,14 +227,15 @@ def crop_date_gui_restriction(value):
 #si no se especifica de qué cultivo se va a buscar
 @app.callback(
     dash.dependencies.Output(component_id = 'opciones_measure', component_property='disabled'),
-    [dash.dependencies.Input(component_id = 'opciones_crop_meas_disp', component_property='value')]
+    [dash.dependencies.Input(component_id = 'opciones_crop_meas_disp', component_property='value'),
+    dash.dependencies.Input(component_id = 'opts_fechas_crop', component_property='value')]
 )
 
-def crop_name_gui_restriction(value):
+def crop_name_gui_restriction(crop_name, date):
 
-    print(value)
+    print(crop_name, date)
 
-    if value == None:
+    if ((crop_name  == None) or (date == None)):
         return True
     
     return False 
@@ -247,7 +252,7 @@ def crop_name_gui_restriction(value):
 
 def show_hide_measure_grap(op_elegidas, crop_name, date):
     
-    print("aaaa esto es para el hidden: ", crop_name, date)
+    print("aaaa esto es para el hidden: ",op_elegidas, crop_name, date)
 
     if ( (op_elegidas == []) or (crop_name == None) or (date == None) ):
         return True
@@ -307,7 +312,7 @@ def build_graph_measurements(op_elegidas, crop_name, date):
 
         if (row_counter == 1):
             
-            local_fig = go.Scatter(x = list(measure["time"]), y = list(measure[op_elegidas[0]]), 
+            local_fig = go.Scatter(x = list(measure["time_"]), y = list(measure[op_elegidas[0]]), 
                         mode = 'lines', name=opts[op_elegidas[0]][0], 
                         marker = dict(color=opts[op_elegidas[0]][1]))
             fig.add_trace(local_fig)
@@ -320,7 +325,7 @@ def build_graph_measurements(op_elegidas, crop_name, date):
 
             for opt in op_elegidas:
 
-                local_fig = go.Scatter(x = list(measure["time"]), y = list(measure[opt]), 
+                local_fig = go.Scatter(x = list(measure["time_"]), y = list(measure[opt]), 
                         mode = 'lines', name=opts[opt][0], marker = dict(color=opts[opt][1]))
                 fig.add_trace(local_fig, row=count, col=1)
                 count += 1
@@ -330,7 +335,7 @@ def build_graph_measurements(op_elegidas, crop_name, date):
 
     return fig 
 
-#-------------------------------------------------------------------
+#-------------------------------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
     app.run_server(debug=True)
