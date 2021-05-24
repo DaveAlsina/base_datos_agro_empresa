@@ -6,7 +6,7 @@ a postgres que se escriben en el archivo: *'conn_data.json'*, la estructura de l
 
 - connection.py (*script encargado de hacer la conexión a postgres*).
 - queries.py (*script que contiene las funciones encargadas de producir el texto que se usa en las queries*).
-- main.py (*archivo en el que se invoca toda la conexión y se muestran las tablas*).
+- main.py (*archivo en el que se invoca toda la conexión y se muestran las gráficos*).
 
 
 
