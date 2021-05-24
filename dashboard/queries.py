@@ -110,7 +110,7 @@ def getProdByCrop():
     group by cultivo"""
 
 def getHaByCrop():
-    return """select opc.crop_name as cultivo, round(sum(pd.harvest_area)::numeric,2) as hectareas_cosechadas
+    return """select opc.crop_name as cultivo, round(avg(pd.harvest_area)::numeric,2) as hectareas_cosechadas
     from production pd join crop cr on(pd.id = cr.id_production) join optimum_condition opc on(cr.id_crop_name_optimum_condition = opc.id_crop_name)
     group by cultivo"""
     

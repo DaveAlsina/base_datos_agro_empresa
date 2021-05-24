@@ -297,8 +297,8 @@ sidebar = html.Div(
                 dbc.NavLink("Ventas", href="/page-1", active="exact"),
                 dbc.NavLink("Gastos", href="/page-2", active="exact"),
                 dbc.NavLink("Ventas vs Gastos", href="/page-3", active="exact"),
-                dbc.NavLink("Produccion", href="/page-4", active="exact"),
-                dbc.NavLink("Ventas vs Produccion", href="/page-5", active="exact"),
+                dbc.NavLink("Producción", href="/page-4", active="exact"),
+                dbc.NavLink("Ventas vs Producción", href="/page-5", active="exact"),
             ],
             vertical=True,
             pills=True,
@@ -328,11 +328,12 @@ page_mediciones_layout = html.Div([
                         html.H4(children = "Resumen"),
                     ]),
                 html.Div(className = 'card-body', children = [
-                       html.P(children = ["En esta sección se presentan las variables ambientales de un cultivo particular que tu seleccionas"
+                       html.P(children = ["En esta sección se presentan las variables ambientales de un cultivo particular que tu seleccionas \
+                                          así como un análisis de las condiciones ambientales y su optimalidad para tus plantaciones seleccionadas."
                            ]),
-
-                       html.P(children = ["así como un análisis de las condiciones ambientales y su optimalidad para tus plantaciones seleccionadas."
-                           ]),
+        
+                       html.P(children = ["Nota: Cada cultivo contiene más de 30.000 datos por lo que el cargue de gráficos puede demorar unos segundos."
+                           ]),        
                             
                     ]),
             ]),
@@ -477,7 +478,11 @@ page_ventas_layout = html.Div(children = [
                                                               por Cultivo, que las ganancias del cultivo de lechuga \
                                                               fueron superiores a las ganancias del cultivo de cilantro. \
                                                               Asimismo, en las toneladas vendidas por cultivo, el cultivo \
-                                                              con mayor ventas en toneladas fue lechuga.")
+                                                              con mayor ventas en toneladas fue el cultivo de lechuga."),
+                                                       
+                                                       html.P("En la serie de tiempo del gráfico de Ventas podemos observar \
+                                                              un pico en el mes de noviembre. \
+                                                              Esto puede reflejarse en la demanda de estos productos para la entrada a la época de diciembre."),
                                                       ]),
                                               ]
                                              )
@@ -515,7 +520,21 @@ page_ventas_layout = html.Div(children = [
                             ]),
                        html.Div(className="col-12 col-xl-6", children=[
                               html.Div(className = "card text-black bg-light mb-3", children=[
-                                      html.P("Se puede observar en el gráfico de Ingresos totales por Cultivo que las ganancias del cultivo de lechuga fueron superiores a las ganancias del cultivo de cilantro.")
+                                      dbc.Card([
+                                              dbc.CardHeader("  "),
+                                              dbc.CardBody([
+                                                       html.P("Por otro lado, también en las toneladas vendidas aumentan en noviembre, \
+                                                              implicando más movimiento de gastos (Pestaña de Gastos)."),
+                                                       
+                                                       html.P("En el gráfico de Ingresos por Zona, las zonas con más ingresos a lo largo del tiempo \
+                                                              son 'cerca al rio' y 'al frente de doña juli'."),
+                                                       
+                                                        html.P("Finalmente, en las estadísticas descriptivas, el promedio de ventas fue de 13.960 COP, \
+                                                               la minima venta fue de 1.400 COP y la maxima venta fue de 30.000 COP.")                                                      
+                                                       
+                                                      ]),
+                                              ]
+                                             )                                      
                                       ]),
                               ]),                                  
                                      
@@ -640,9 +659,25 @@ page_gastos_layout = html.Div(children = [
                         ]),
                                         
                     html.Div(className="col-12 col-xl-6", children=[
-                        html.Div(className="card border", children=[
-
-                            ]),
+                              html.Div(className = "card text-black bg-light mb-3", children=[
+                                      dbc.Card([
+                                              dbc.CardHeader("  "),
+                                              dbc.CardBody([
+                                                       html.P("Los gastos en el cultivo de lechuga son superiores a los de cilantro. \
+                                                              Desde julio de 2020 hasta noviembre de 2020, se ven cambios en los gastos abruptos. \
+                                                              Esto puede ser por el comienzo de la empresa, los gastos imprevistos y los problemas de comercialización."),
+                                                       
+                                                       html.P("Tenemos unos gastos por categoría, donde las razones principales de gastos son las facturas \
+                                                              de servicio público y los procesos de plantación."),
+                                                       
+                                                        html.P("Asimismo, los zonas con mayor gasto son 'atrás de la casa' y 'frente a la casa'."),
+                                                        
+                                                        html.P("Finalmente, en las estadísticas descriptivas, el promedio de gastos fue de 55.888 COP, \
+                                                               el minimo gasto fue de 2.600 COP y el maximo gasto fue de 110.500 COP.")              
+                                                      ]),
+                                              ]
+                                             )                                      
+                                      ]),
                         ]),
                     ]), ## primera linea
 
@@ -672,9 +707,19 @@ page_ventasVSgastos_layout = html.Div(children = [
                         ]),
                                         
                     html.Div(className="col-12 col-xl-6", children=[
-                        html.Div(className="card border", children=[
-
-                            ]),
+                              html.Div(className = "card text-black bg-light mb-3", children=[
+                                      dbc.Card([
+                                              dbc.CardHeader("  "),
+                                              dbc.CardBody([
+                                                       html.P("Desde junio de 2020 hasta mayo de 2021, las ganancias han sido positivas, \
+                                                              debido a que los ingresos por las ventas han sido superiores a los gastos. \
+                                                              Sin embargo, la diferencia entre ellas no es significativa al momento de analizar por mes \
+                                                              u otras razones externas.")
+                                                                         
+                                                      ]),
+                                              ]
+                                             )                                      
+                                      ]),
                         ]),
                     ]), ## 
                 ]),
@@ -682,7 +727,7 @@ page_ventasVSgastos_layout = html.Div(children = [
         
         
 page_prod_layout = html.Div(children = [
-        html.H1(children = 'Análsis de Producción', className = 'text-center'),
+        html.H1(children = 'Análisis de Producción', className = 'text-center'),
         html.Div(className = "container-fluid", children =[
                 
                 html.Div(className="row mt-4", children=[
@@ -704,7 +749,7 @@ page_prod_layout = html.Div(children = [
                     html.Div(className="col-12 col-xl-6", children=[
                         html.Div(className="card border", children=[
                                 html.Div(className="card-header bg-success text-light", children=[
-                                        html.H3(children="Hectareas cosechadas por Cultivo"),
+                                        html.H3(children="Promedio de Hectareas cosechadas por Cultivo"),
                                 ]),
                                 html.Div(className="card-body", children=[
                                         dcc.Graph(
@@ -764,10 +809,24 @@ page_prod_layout = html.Div(children = [
                         ]),
                                         
                     html.Div(className="col-12 col-xl-6", children=[
-                        html.Div(className="card border", children=[
-
-                            ]),
-                        ]),
+                              html.Div(className = "card text-black bg-light mb-3", children=[
+                                      dbc.Card([
+                                              dbc.CardHeader("  "),
+                                              dbc.CardBody([
+                                                       html.P("Tanto la producción por cultivo como las hectáreas cosechadas, \
+                                                             el cultivo de lechuga fue el que más se dedicó gasto y espacio en la empresa."),
+                                                              
+                                                       html.P("Se puede observar en las gráficas de rendimiento de cada cultivo, que han venido \
+                                                              disminuyendo a lo largo del tiempo con cambios abruptos."),
+                                                              
+                                                        html.P("En la producción por zona, podemos denotar que las zonas donde se hizo más \
+                                                               producción fueron en 'frente a la casa' y 'cerca al rio'"),
+                                                               
+                                                        html.P("Nota: las hectareas por zona son de 20 ha."),   
+                                                      ]),
+                                              ]),
+                                            ]),                                     
+                                      ]),
                     ]), ## primera linea
 
                                                 
@@ -796,9 +855,20 @@ page_prodVSventas_layout = html.Div(children = [
                         ]),
                                         
                     html.Div(className="col-12 col-xl-6", children=[
-                        html.Div(className="card border", children=[
-
-                            ]),
+                              html.Div(className = "card text-black bg-light mb-3", children=[
+                                      dbc.Card([
+                                              dbc.CardHeader("  "),
+                                              dbc.CardBody([
+                                                       html.P("Desde junio de 2020 hasta mayo de 2021, la producción total en toneladas \
+                                                              en cada cultivo, ha sido superior que las toneladas vendidas. Esto responde a las pérdidas \
+                                                              de cada cultivo ya sea por cambios climáticos, problemas de comercialización, entre otros. \
+                                                              También, podemos notar que el cultivo con mayor pérdidas ha sido el de lechuga, \
+                                                              teniendo en cuenta que fue el cultivo en que más se ha invertido y producido.")
+                                                                         
+                                                      ]),
+                                              ]
+                                             )                                      
+                                      ]),
                         ]),
                     ]), ## 
                 ]),
