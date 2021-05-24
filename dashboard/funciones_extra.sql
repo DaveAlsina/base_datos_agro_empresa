@@ -1,5 +1,5 @@
 create or replace function get_crops_with_measurements(minDate date, maxDate date)
-	returns table(crop_name varchar(50), crop_id integer, date_ date) 
+	returns table(crop_name varchar(50), crop_id integer, date_ timestamp) 
 	as
 	'
 	
@@ -16,7 +16,7 @@ create or replace function get_crops_with_measurements(minDate date, maxDate dat
 			 on zn_crop.zone_id = sinfo.id_zone) 
 			 as crp_sensor_date
 			 on mea.sensor_id_sensor_info = crp_sensor_date.sensor_id
-		 where sdate::date between minDate and maxDate) as crop_with_meas
+		 where sdate::timestamp between minDate and maxDate) as crop_with_meas
 	on opt_c.id_crop_name = crop_with_meas.id_crp_name;
 	'
 	language sql;
@@ -68,5 +68,6 @@ create or replace function get_crop_measurements(crop_name_ varchar(45), date_ d
 	language sql;
 	
 select * from get_crop_measurements('lechuga', '2021-04-28');
+
 
 
