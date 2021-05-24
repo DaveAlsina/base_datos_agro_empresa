@@ -1,5 +1,5 @@
 create or replace function get_crops_with_measurements(minDate date, maxDate date)
-	returns table(crop_name varchar(50), crop_id integer, date_ timestamp) 
+	returns table(crop_name varchar(50), crop_id integer, date_ date) 
 	as
 	'
 	
@@ -42,7 +42,7 @@ create or replace function get_max_date_measurement()
 select * from get_crops_with_measurements(get_min_date_measurement(), get_max_date_measurement());
 
 create or replace function get_crop_measurements(crop_name_ varchar(45), date_ date)
-	returns table(time_ timestamp, temperature numeric(4,2), humidity numeric(4,2), pressure numeric(6,2), lux numeric(7,2), electroconductivity numeric(4,3))
+	returns table(time_ date, temperature numeric(4,2), humidity numeric(4,2), pressure numeric(6,2), lux numeric(7,2), electroconductivity numeric(4,3))
 	as
 	'
 	
