@@ -293,13 +293,12 @@ sidebar = html.Div(
         ),
         dbc.Nav(
             [
-                dbc.NavLink("Principal", href="/", active="exact"),
-                dbc.NavLink("Mediciones", href="/page-1", active="exact"),
-                dbc.NavLink("Ventas", href="/page-2", active="exact"),
-                dbc.NavLink("Gastos", href="/page-3", active="exact"),
-                dbc.NavLink("Ventas vs Gastos", href="/page-4", active="exact"),
-                dbc.NavLink("Produccion", href="/page-5", active="exact"),
-                dbc.NavLink("Ventas vs Produccion", href="/page-6", active="exact"),
+                dbc.NavLink("Mediciones", href="/", active="exact"),
+                dbc.NavLink("Ventas", href="/page-1", active="exact"),
+                dbc.NavLink("Gastos", href="/page-2", active="exact"),
+                dbc.NavLink("Ventas vs Gastos", href="/page-3", active="exact"),
+                dbc.NavLink("Produccion", href="/page-4", active="exact"),
+                dbc.NavLink("Ventas vs Produccion", href="/page-5", active="exact"),
             ],
             vertical=True,
             pills=True,
@@ -1080,25 +1079,23 @@ def show_hide_measure_grap2(crop_name, date):
                     
 @app.callback(Output("page-content", "children"), [Input("url", "pathname")])
 def render_page_content(pathname):
-    if pathname == "/":
-        return html.P("Hola bb")
     
-    elif pathname == "/page-1":
+    if pathname == "/":
         return page_mediciones_layout
     
-    elif pathname == "/page-2":
+    elif pathname == "/page-1":
         return page_ventas_layout
     
-    elif pathname == "/page-3":
+    elif pathname == "/page-2":
         return page_gastos_layout
 
-    elif pathname == "/page-4":
+    elif pathname == "/page-3":
         return page_ventasVSgastos_layout
 
-    elif pathname == "/page-5":
+    elif pathname == "/page-4":
         return page_prod_layout
 
-    elif pathname == "/page-6":
+    elif pathname == "/page-5":
         return page_prodVSventas_layout
     
     # If the user tries to reach a different page, return a 404 message
