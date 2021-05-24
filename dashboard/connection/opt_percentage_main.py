@@ -36,40 +36,32 @@ for cropname in measurementSelectionMenu['crop_name']:
     options_crop_measurement_display.append(local_dict)
 
 
-
-# QUERIES
-conn.openConnection()
-querycon = pd.read_sql_query(sql.getMeasurements(), conn.connection)
-
-queryhumlech = pd.read_sql_query(sql.getPercHum("lechuga"), conn.connection)
-queryhumcil = pd.read_sql_query(sql.getPercHum("cilantro"), conn.connection)
-queryeclech = pd.read_sql_query(sql.getPercEc("lechuga"), conn.connection)
-queryeccil = pd.read_sql_query(sql.getPercEc("cilantro"), conn.connection)
-conn.closeConnection()
-# queryhumlech.head()
-# queryhumcil.head()
-# queryeclech.head()
-# queryeccil.head()
-dfmain = pd.DataFrame(querycon, columns= ["sensor_id_sensor_info", "time", "temperature", "humidity", "pressure", "lux", "electroconductivity"])
-dflechugahum = pd.DataFrame(queryhumlech, columns = ["crop_name", "percentage"])
-dflechugaec = pd.DataFrame(queryeclech, columns = ["crop_name", "percentage"])
-dfcilhum = pd.DataFrame(queryhumcil, columns = ["crop_name", "percentage"])
-dfcilec = pd.DataFrame(queryeccil, columns = ["crop_name", "percentage"])
-
-
-#CREACION DE LAS GRÁFICAS
-
-figBar = go.Figure(go.Bar(x = dflechugahum.crop_name, y = dflechugahum.percentage, name='Humedad'))
-figBar.add_trace(go.Bar(x = dflechugaec.crop_name, y = dflechugaec.percentage, name='Electroconductividad'))
-figBar.add_trace(go.Bar(x = dfcilhum.crop_name, y=dfcilhum.percentage, name='Humedad'))
-
-
 #LAYOUT
 
 app.layout = html.Div([
 
     html.Div(
     children = [
+
+        html.H1(children = 'Visualización de variables ambientales', className = 'text-center'),
+        html.Div(className = "center row mt-4"),
+
+        html.Div(className = 'card text-center', children = [
+                html.Div(className = 'card-header', children = [
+                        html.H4(children = "Resumen"),
+                    ]),
+                html.Div(className = 'card-body', children = [
+                       html.P(children = ["En esta sección se presentan las variables ambientales de un cultivo particular que tu seleccionas"
+                           ]),
+
+                       html.P(children = ["así como un análisis de las condiciones ambientales y su optimalidad para tus plantaciones seleccionadas."
+                           ]),
+                            
+                    ]),
+            ]),
+
+        html.Div(className = "center row mt-4"),
+
         html.Div(
             className = "center row mt-4",
             children = [
@@ -81,7 +73,7 @@ app.layout = html.Div([
                     children = [
                         html.Div(className = "card-border",
                             children = [
-                            html.Div(children="Selección de cultivo", className="card-header bg-dark text-light"),
+                            html.Div(children="Selección de cultivo", className="card-header bg-success text-light"),
 
                         
                             html.Div(className = "menu", children = [
@@ -104,7 +96,7 @@ app.layout = html.Div([
                         children = [
                             html.Div(className = "card-border",
                                 children = [
-                                    html.Div(children = "Selección de fecha de cultivo", className="card-header bg-dark text-light"),
+                                    html.Div(children = "Selección de fecha de cultivo", className="card-header bg-success text-light"),
                                     dcc.Dropdown(
                                         id = "opts_fechas_crop",
                                             value = None,
@@ -123,7 +115,7 @@ app.layout = html.Div([
     html.Div(className = "card-border",
         children = [
             #seleccionar que variables ambientales del cultivo se quieren visualizar
-            html.Div(children = "Selección de variables ambientales", className = "card-header bg-dark text-center text-light"),
+            html.Div(children = "Selección de variables ambientales", className = "card-header bg-success text-center text-light"),
                 dcc.Dropdown(
                     id = 'opciones_measure',
                     options = [
@@ -146,32 +138,18 @@ app.layout = html.Div([
     
     ],className = "body"),
 
-        html.Div(children = [
-                html.H1(children = 'Optimum Conditions Analysis', className = 'text-center'),
-                html.Div(className = "container-fluid", children =[
-                
-                html.Div(className="row mt-4", children=[
-                    html.Div(className = "card text-center", children =[
-
-                            html.Div(className="col-12 col-xl-6", children=[ ##grid division bootstrap
-                                    html.Div(className="card border", children=[
-                                            html.Div(className="card-header bg-success text-light", children=[
-                                                    html.H3(children=""),
-                            
-                                    ]),
-                            html.Div(className = "card-body", children = [
+        html.Div(id = "optimum_cond_plot", children = [
+            
+                html.H1(children = 'Análisis de condiciones óptimas', className = 'text-center'),
+                html.Div(className = "container-fluid", children =[ #DESDE AQUÍ                
+                html.Div(className = "card-body", children = [
                                     dcc.Graph(
-                                            id = 'barIncome1',
-                                            figure = figBar
+                                            id = 'grafico_opt',
                                             ),
                                     ]),
-                                ]),
-                            ]),
-                        ]),
-                ]), ## cerrar pareja
-         html.Footer(className = "text-muted text-center", children = "La Goobi")
+         #html.Footer(className = "text-muted text-center", children = "")
              ]),
-         ])
+         ]),
 
 ],className = "bg-light")
 
@@ -225,6 +203,23 @@ def crop_date_gui_restriction(value):
     
     return False 
 
+#callback para poner como valor de fecha de cultivo 
+#a None para evitar bugs
+@app.callback(
+    dash.dependencies.Output(component_id = 'opts_fechas_crop', component_property='value'),
+    [dash.dependencies.Input(component_id = 'opciones_crop_meas_disp', component_property='value'),
+     dash.dependencies.Input(component_id = 'opts_fechas_crop', component_property='value')   
+        ]
+)
+
+def crop_date_gui_restriction_value(crop_name, date):
+
+    print("check para setear a None selección de fechas de cultivos en caso de que se borre crop_name, se recibió: ", crop_name, date)
+
+    if crop_name == None:
+        return None 
+    
+    return date 
 
 #callback para blockear la selección de qué condicion ambiental buscar
 #si no se especifica de qué cultivo se va a buscar y en qué fecha
@@ -346,57 +341,96 @@ def build_graph_measurements(op_elegidas, crop_name, date):
                 count += 1
     
 
-    fig.update_layout(paper_bgcolor = "#161B29", plot_bgcolor = "#161B29", height = max_height)
+    #fig.update_layout(paper_bgcolor = "#161B29", plot_bgcolor = "#161B29", height = max_height)
+    fig.update_layout(paper_bgcolor = "#e4e8ee", plot_bgcolor = "#e4e8ee", height = max_height)
 
     return fig 
 
-#-------------------------------------------------------------------------------------------------------------------------------------------
 
+@app.callback(
+    dash.dependencies.Output(component_id = 'grafico_opt', component_property='figure'),
+    [dash.dependencies.Input(component_id = 'opciones_measure', component_property='value'),
+    dash.dependencies.Input(component_id = 'opciones_crop_meas_disp', component_property='value'),
+    dash.dependencies.Input(component_id = 'opts_fechas_crop', component_property='value')]
+)
+
+def crear_tabla_opt(op_elegidas, crop_name, date):
+    # QUERIES SIN FECHA
+    conn.openConnection()
+    querycon = pd.read_sql_query(sql.getMeasurements(), conn.connection)
+    conn.closeConnection()
+
+    #SE CREA LA GRÁFICA VACÍA
+    figBar = go.Figure()
+
+    if crop_name == "lechuga" and date != None:
+
+        #QUERIES
+        conn.openConnection()
+        queryhumlech = pd.read_sql_query(sql.getPercHum("lechuga"), conn.connection)
+        queryeclech = pd.read_sql_query(sql.getPercEc("lechuga"), conn.connection)
+        querylechdia = pd.read_sql_query(sql.getPercTempD("lechuga", date), conn.connection)
+        querylechnoche = pd.read_sql_query(sql.getPercTempN("lechuga", date), conn.connection)
+        conn.closeConnection()
+
+        #DATAFRAMES
+        dflechugahum = pd.DataFrame(queryhumlech, columns = ["crop_name", "percentage"])
+        dflechugaec = pd.DataFrame(queryeclech, columns = ["crop_name", "percentage"])
+        dflechugadia = pd.DataFrame(querylechdia, columns = ["crop_name", "percentage"])
+        dflechuganoche = pd.DataFrame(querylechnoche, columns = ["crop_name", "percentage"])
+
+        #BARRAS
+        figBar.add_trace(go.Bar(x = dflechugahum.crop_name, y = dflechugahum.percentage, name='Humedad'))
+        figBar.add_trace(go.Bar(x = dflechugaec.crop_name, y = dflechugaec.percentage, name='Electroconductividad'))
+        figBar.add_trace(go.Bar(x = dflechugadia.crop_name, y = dflechugadia.percentage, name='Temperatura - día'))
+        figBar.add_trace(go.Bar(x = dflechuganoche.crop_name, y = dflechuganoche.percentage, name='Temperatura - noche'))
+        
+
+    elif crop_name == "cilantro" and date != None:
+
+        #QUERIES
+        conn.openConnection()
+        queryhumcil = pd.read_sql_query(sql.getPercHum("cilantro"), conn.connection)
+        queryeccil = pd.read_sql_query(sql.getPercEc("cilantro"), conn.connection)
+        querycildia = pd.read_sql_query(sql.getPercTempD("cilantro", date), conn.connection)
+        querycilnoche = pd.read_sql_query(sql.getPercTempN("cilantro", date), conn.connection)
+        conn.closeConnection()
+
+        #DATAFRAMES
+        dfcilhum = pd.DataFrame(queryhumcil, columns = ["crop_name", "percentage"])
+        dfcilec = pd.DataFrame(queryeccil, columns = ["crop_name", "percentage"])
+        dfcilDia = pd.DataFrame(querycildia, columns = ["crop_name", "percentage"])
+        dfcilNoche = pd.DataFrame(querycilnoche, columns = ["crop_name", "percentage"])
+        
+        #BARRAS
+        figBar.add_trace(go.Bar(x = dfcilhum.crop_name, y=dfcilhum.percentage, name='Humedad'))
+        figBar.add_trace(go.Bar(x = dfcilec.crop_name, y = dfcilec.percentage, name='Electroconductividad'))
+        figBar.add_trace(go.Bar(x = dfcilDia.crop_name, y = dfcilDia.percentage, name='Temperatura - día'))
+        figBar.add_trace(go.Bar(x = dfcilNoche.crop_name, y = dfcilNoche.percentage, name='Temperatura - noche'))
+
+    return figBar
+
+#callback para ocultar la figura en donde se representan
+#los porcentajes de veces en condiciones óptimas para las 
+#variables ambientales a las cuales se les puede hacer este análisis
+@app.callback(
+    dash.dependencies.Output(component_id = 'optimum_cond_plot', component_property='hidden'),
+    [dash.dependencies.Input(component_id = 'opciones_crop_meas_disp', component_property='value'),
+    dash.dependencies.Input(component_id = 'opts_fechas_crop', component_property='value')]
+)
+
+def show_hide_measure_grap(crop_name, date):
+    
+    print("check para ocultar gráfica, se recibió: ", crop_name, date)
+    print()
+
+    if ((crop_name == None) or (date == None) ):
+        return True
+
+    else:
+        return False
+
+#-------------------------------------------------------------------------------------------------------------------------------------------
 if __name__ == '__main__':
     app.run_server(debug=True)
-
-
-#-------------------------------------------------------------------------------------------------------------------------------------------
-
-# app.layout = html.Div(children = [
-#         html.H1(children = 'Optimum Conditions Analysis', className = 'text-center'),
-#         html.Div(className = "container-fluid", children =[
-                
-#                 html.Div(className="row mt-4", children=[
-#                         html.Div(className="col-12 col-xl-6", children=[ ##grid division bootstrap
-#                                 html.Div(className="card border", children=[
-#                                         html.Div(className="card-header bg-success text-light", children=[
-#                                                 html.H3(children=""),
-                        
-#                         ]),
-#                         html.Div(className = "card-body", children = [
-#                                 dcc.Graph(
-#                                         id = 'barIncome1',
-#                                         figure = figBar
-#                                         ),
-#                                 ]),
-#                             ]),
-#                         ]),
-                                        
-#                 # html.Div(className="col-12 col-xl-6", children=[
-#                 #         html.Div(className="card border", children=[
-#                 #                 html.Div(className="card-header bg-success text-light", children=[
-#                 #                         html.H3(children="Total Production Sold by Crop"),
-#                 #                 ]),
-#                 #                 html.Div(className="card-body", children=[
-#                 #                         dcc.Graph(
-#                 #                                 id = "barProd1",
-#                 #                                 figure = figBarProd1
-#                 #                         ),
-#                 #                 ]),
-#                 #             ]),
-#                 #         ]),
-#                     ]), ## cerrar pareja
-#         html.Footer(className = "text-muted text-center", children = "La Goobi")
-#             ]),
-#         ])
-    
-        
-# if __name__ == '__main__':
-#     app.run_server(debug = True)
 
