@@ -13,8 +13,7 @@ sobre el estado de la empresa y los cultivos.
 - Se encuentran los datos de cada tabla del modelo relacional.
 
 ### dashborad: 
-- *dash-prueba.py:* se encuentra un dash de prueba
-- scripts de sql para luego usarlos en el dash
+- main.py para correr el programa
 #### connection: 
 - Tiene los scripts para hacer la conexión a la base de datos con postgres a través de python.
 
@@ -26,6 +25,3 @@ sobre el estado de la empresa y los cultivos.
 
 ### upload\_data:
 - Posee los archivos create\_table\_project.sql y load\_measurements\_project.sql que permite crear las tablas y cargar los datos en SQL.
-
-### connection: 
-- Tiene los scripts para hacer la conexión a la base de datos con postgres a través de python.
