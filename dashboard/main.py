@@ -16,7 +16,7 @@ conn = Connection("./conn_data.json") #datos para la conexión
 external_stylesheets = ["https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"]
 
 #instancia de Dash
-app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+app = dash.Dash(__name__, external_stylesheets=external_stylesheets, suppress_callback_exceptions=True)
 
 ##### Creación de las gráficas
 
@@ -835,6 +835,20 @@ def display_date_opts(crop_name):
         #en caso de que se rompa la funcionalidad aunque es muy poco posible
         return [{'label' : 'No hay opciones disponibles', 'value' : 0}]
 
+#callback para poner como valor de fecha de cultivo 
+#a None para evitar bugs
+@app.callback(
+    dash.dependencies.Output(component_id = 'opts_fechas_crop', component_property='value'),
+    [dash.dependencies.Input(component_id = 'opciones_crop_meas_disp', component_property='value'),]
+)
+
+def crop_date_gui_restriction_value(crop_name):
+
+    print("check para setear a None selección de fechas de cultivos en caso de que se borre crop_name, se recibió: ", crop_name)
+
+    if crop_name == None:
+        return None 
+    
 
 #callback para blockear la selección de qué fechas buscar
 #si no se especifica de cuál es el cultivo seleccionado
@@ -852,23 +866,7 @@ def crop_date_gui_restriction(value):
     
     return False 
 
-#callback para poner como valor de fecha de cultivo 
-#a None para evitar bugs
-@app.callback(
-    dash.dependencies.Output(component_id = 'opts_fechas_crop', component_property='value'),
-    [dash.dependencies.Input(component_id = 'opciones_crop_meas_disp', component_property='value'),
-     dash.dependencies.Input(component_id = 'opts_fechas_crop', component_property='value')   
-        ]
-)
 
-def crop_date_gui_restriction_value(crop_name, date):
-
-    print("check para setear a None selección de fechas de cultivos en caso de que se borre crop_name, se recibió: ", crop_name, date)
-
-    if crop_name == None:
-        return None 
-    
-    return date 
 
 #callback para blockear la selección de qué condicion ambiental buscar
 #si no se especifica de qué cultivo se va a buscar y en qué fecha
