@@ -1,3 +1,149 @@
+## sales
+
+def getTotalIncomeByCrop():
+    return """select opc.crop_name as cultivo, sum(sls.total_income)::float as ingresos_totales
+        from sales sls join crop cr on(sls.id_crop = cr.id) join optimum_condition opc on(cr.id_crop_name_optimum_condition = opc.id_crop_name)
+        group by cultivo"""
+
+def getTotalProdSoldByCrop():
+    return """select opc.crop_name as cultivo, cast(sum(sls.quantity)/1000000 as float) as toneladas_totales
+        from sales sls join crop cr on(sls.id_crop = cr.id) join optimum_condition opc on(cr.id_crop_name_optimum_condition = opc.id_crop_name)
+        group by cultivo"""
+
+
+def getTimeSeriesSales():
+    return """select date as fecha, sum(total_income)::float as ingresos_totales
+from sales
+group by fecha
+order by fecha asc"""
+
+def getTimeSeriesTons():
+    return """select date as fecha, sum(quantity)::float/1000000 as toneladas
+        from sales
+        group by fecha
+        order by fecha asc"""
+
+
+def getSalesbyZone():
+    return """select z.name as zona, sum(sls.total_income)::float as ingresos_totales
+        from sales sls join crop cr on(sls.id_crop = cr.id) join zone z on(cr.id_zone = z.id)
+        group by zona"""
+        
+        
+def StatIncome():
+    return """select 'total' as est_des,
+    sum(total_income)::float as ventas
+    from sales
+    union all
+    select 'promedio',
+    round(avg(total_income)::numeric,1)
+    from sales
+    union all
+    select 'min',
+    min(total_income)
+    from sales
+    union all
+    select 'max',
+    max(total_income)
+    from sales"""
+    
+    
+## expenses
+    
+
+def getTotalExpensesByCrop():
+    return """select opc.crop_name as cultivo, sum(ex.amount)::float as monto_gasto
+    from expenses ex join crop cr on(ex.id_crop = cr.id) join optimum_condition opc on(cr.id_crop_name_optimum_condition = opc.id_crop_name)
+    group by cultivo"""
+
+
+def getTimeSeriesExpenses():
+    return """select date as fecha, sum(amount)::float as monto_gasto
+    from expenses
+    group by fecha
+    order by fecha asc"""
+    
+def getExpensesCategory():
+    return """select exc.name as categoria, sum(ex.amount)::float as monto_gasto
+    from expenses ex join expense_category exc on(ex.id_expense_category = exc.id)
+    group by categoria"""
+    
+def StatExpenses():
+    return """select 'total' as est_des,
+    sum(amount)::float as gastos
+    from expenses
+    union all
+    select 'promedio',
+    round(avg(amount)::numeric,1)
+    from expenses
+    union all
+    select 'min',
+    min(amount)
+    from expenses
+    union all
+    select 'max',
+    max(amount)
+    from expenses"""
+
+def getExpensesbyZone():
+    return """select z.name as zona, sum(ex.amount)::float as monto_gasto
+        from expenses ex join crop cr on(ex.id_crop = cr.id) join zone z on(cr.id_zone = z.id)
+        group by zona"""
+
+### ventas vs gastos
+        
+def getTotalSalesExpenses():
+    return """select 'ingresos totales' as tipo,
+    sum(total_income)::float as total
+	from sales
+	union all
+	select 'gastos totales',
+    sum(amount)::float
+	from expenses"""
+    
+    
+### produccion
+
+def getProdByCrop():
+    return """select opc.crop_name as cultivo, round(sum(pd.production_t)::numeric,2) as produccion_toneladas
+    from production pd join crop cr on(pd.id = cr.id_production) join optimum_condition opc on(cr.id_crop_name_optimum_condition = opc.id_crop_name)
+    group by cultivo"""
+
+def getHaByCrop():
+    return """select opc.crop_name as cultivo, round(sum(pd.harvest_area)::numeric,2) as hectareas_cosechadas
+    from production pd join crop cr on(pd.id = cr.id_production) join optimum_condition opc on(cr.id_crop_name_optimum_condition = opc.id_crop_name)
+    group by cultivo"""
+    
+def RendLechuga():
+    return """select cr.end_date::date as fecha,  pd.performance_crop as rendimiento_lechuga
+    from production pd join crop cr on(pd.id = cr.id_production) join optimum_condition opc on(cr.id_crop_name_optimum_condition = opc.id_crop_name)
+    where opc.crop_name = 'lechuga'"""
+
+def RendCilantro():
+    return """select cr.end_date::date as fecha, pd.performance_crop as rendimiento_cilantro
+    from production pd join crop cr on(pd.id = cr.id_production) join optimum_condition opc on(cr.id_crop_name_optimum_condition = opc.id_crop_name)
+    where opc.crop_name = 'cilantro'"""
+
+def ProdByZone():
+    return """select z.name as zona, round(sum(pd.production_t)::numeric,2) as produccion_toneladas
+    from production pd join crop cr on(pd.id = cr.id_production) join zone z on(cr.id_zone = z.id)
+    group by zona"""
+
+### prod vs ven
+    
+def ProdVsSales():
+    return """select cultivo, produccion_toneladas, toneladas_vendidas, round((toneladas_vendidas - produccion_toneladas)::numeric,2) as perdidas
+    from (
+            select opc.crop_name as cultivo, round(sum(pd.production_t)::numeric,2) as produccion_toneladas
+            from production pd join crop cr on(pd.id = cr.id_production) join optimum_condition opc on(cr.id_crop_name_optimum_condition = opc.id_crop_name)
+            group by cultivo) as pd
+    join
+            (select opc.crop_name as cultivo1, round((sum(sls.quantity)/1000000)::numeric,2) as toneladas_vendidas
+            from sales sls join crop cr on(sls.id_crop = cr.id) join optimum_condition opc on(cr.id_crop_name_optimum_condition = opc.id_crop_name)
+            group by cultivo1) as sls on (pd.cultivo = sls.cultivo1)"""
+            
+            
+            
 def createMeasurement_selection_menu():
 
     """
@@ -57,15 +203,6 @@ def getZone():
 def getProduction():
     return """select * from production;"""
 
-def getTotalIncomeByCrop():
-    return """select opc.crop_name as crop, cast(sum(sls.total_income) as float) as total_income
-from sales sls join crop cr on(sls.id_crop = cr.id) join optimum_condition opc on(cr.id_crop_name_optimum_condition = opc.id_crop_name)
-group by crop"""
-
-def getTotalProdSoldByCrop():
-    return """select opc.crop_name as crop, cast(sum(sls.quantity)/1000000 as float) as total_tons
-from sales sls join crop cr on(sls.id_crop = cr.id) join optimum_condition opc on(cr.id_crop_name_optimum_condition = opc.id_crop_name)
-group by crop"""
 
 #EL NOMBRE DEL CULTIVO SE DEBE INGRESAR EN COMILLAS "lechuga" O "cilantro" COMO PARÁMETRO
 def getPercHum(nombre_cultivo):
@@ -176,6 +313,4 @@ def getPercTempN(nombre_cultivo, fecha):
     WHERE opt_c.crop_name = '{0}')) as percentage
 	FROM optimum_condition
 	WHERE crop_name = '{0}'""".format(nombre_cultivo, fecha)
-
-
-
+	
