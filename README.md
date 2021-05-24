@@ -1,4 +1,4 @@
-## Proyecto de Bases de Datos: Agro-empresa
+# Proyecto de Bases de Datos: Agro-empresa
 
 Este proyecto desarrolla una base de datos para una agro empresa que permite almacenar 
 información sobre las condiciones a las que se encuentra expuesto el cultivo, y contabilidad básica 
@@ -7,7 +7,7 @@ sobre el estado de la empresa y los cultivos.
 
 ----
 
-**El proyecto se compone de las siguientes carpetas:**
+## **El proyecto se compone de las siguientes carpetas:**
 
 ### data: 
 - Se encuentran los datos de cada tabla del modelo relacional.
@@ -26,7 +26,7 @@ sobre el estado de la empresa y los cultivos.
 ### upload\_data:
 - Posee los archivos create\_table\_project.sql y load\_measurements\_project.sql que permite crear las tablas y cargar los datos en SQL.
 
-**Pasos para correr el proyecto:**
+## **Pasos para correr el proyecto:**
 
 1. Entrar a la carpeta data descargar los archivos .csv. Luego, entrar a la carpeta upload data
 para crear las tablas con el archivo create table project.sql y para cargar los datos a través
