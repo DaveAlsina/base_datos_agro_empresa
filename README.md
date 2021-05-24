@@ -25,3 +25,13 @@ sobre el estado de la empresa y los cultivos.
 
 ### upload\_data:
 - Posee los archivos create\_table\_project.sql y load\_measurements\_project.sql que permite crear las tablas y cargar los datos en SQL.
+
+**Pasos para correr el proyecto:**
+
+1. Entrar a la carpeta data descargar los archivos .csv. Luego, entrar a la carpeta upload data
+para crear las tablas con el archivo create table project.sql y para cargar los datos a través
+del archivo load measurements project.sql al pgAdmin.
+2. Luego, entrar a la carpeta dashboard.
+3. Modificar el archivo conn data.json con las credenciales del personalizado pgAdmin.
+4. Correr las funciones extras o auxiliares del archivo funciones extras.sql en pgAdmin.
+5. Por último, correr el archivo main.py.
