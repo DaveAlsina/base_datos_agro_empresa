@@ -66,6 +66,6 @@ create or replace function get_crop_measurements(crop_name_ varchar(45), date_ d
 		
 	'
 	language sql;
-
-
+	
+select * from get_crop_measurements('lechuga', '2021-04-28');
 
